@@ -10,9 +10,80 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Test {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String
+model Profile {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  userId   String @unique
+  name     String
+  imageUrl String
+  email    String
 
-  @@map("test")
+  server  Server[]
+  member  Member[]
+  channel Channel[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("profiles")
+}
+
+model Server {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  name       String
+  imageUrl   String
+  inviteCode String
+
+  member  Member[]
+  channel Channel[]
+
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String?  @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("servers")
+}
+
+enum MemberRole {
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+model Member {
+  id   String     @id @default(auto()) @map("_id") @db.ObjectId
+  role MemberRole @default(GUEST)
+
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String?  @db.ObjectId
+  server    Server?  @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  serverId  String?  @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("members")
+}
+
+enum ChannelType {
+  TEXT
+  AUDIO
+  VIDEO
+}
+
+model Channel {
+  id   String      @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  type ChannelType @default(TEXT)
+
+  profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String?  @db.ObjectId
+  server    Server?  @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  serverId  String?  @db.ObjectId
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("channels")
 }

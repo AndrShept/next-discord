@@ -24,6 +24,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import z from 'zod';
 import { FileUpload } from '../FileUpload';
+import { useRouter } from 'next/navigation';
 
 const formScheme = z.object({
   name: z.string().min(1, { message: 'Sever name is required' }).max(20),
@@ -31,6 +32,7 @@ const formScheme = z.object({
 });
 
 export const InitialModal = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formScheme>>({
     defaultValues: {
       name: '',
@@ -41,7 +43,19 @@ export const InitialModal = () => {
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formScheme>) => {
-    console.log(values);
+    try {
+      const res = await fetch('/api/servers', {
+        method: 'POST',
+        body: JSON.stringify(values),
+      });
+      if (res.ok) {
+        form.reset();
+        router.refresh();
+        window.location.reload();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <Dialog>

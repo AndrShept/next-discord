@@ -3,6 +3,8 @@ import { Open_Sans } from 'next/font/google';
 import { ClerkProvider } from '@clerk/nextjs';
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
+import { NavigationSidebar } from '@/components/navigation/NavigationSidebar';
+import { CreateServerModal } from '@/components/modal/create-server-modal';
 
 const font = Open_Sans({ subsets: ['latin'] });
 
@@ -26,7 +28,13 @@ export default function RootLayout({
             enableSystem={false}
             disableTransitionOnChange
           >
-            {children}
+            <CreateServerModal/>
+            <div className='h-full flex max-w-7xl mx-auto'>
+              <div className='hidden md:flex h-full w-[72px] z-30 flex-col bg-zinc-200 fixed inset-y-0'>
+                <NavigationSidebar />
+              </div>
+              <main className='md:pl-[88px] dark:bg-zinc-900 bg-zinc-300 h-full w-full md:py-4 p-2'>{children}</main>
+            </div>
           </ThemeProvider>
         </body>
       </html>

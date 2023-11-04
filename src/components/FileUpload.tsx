@@ -17,7 +17,7 @@ export const FileUpload = ({ endpoint, onChange, value }: FileUploadProps) => {
 
   if (value && fileType !== 'pdf') {
     return (
-      <div className='relative h-20 w-20'>
+      <div className='relative h-20 w-20 mt-4'>
         <Image fill src={value} alt={'Upload'} className='rounded-full' />
         <button onClick={()=> onChange('')} className='absolute rounded-full transition hover:bg-red-600 -top-2 -right-1 p-[2px] bg-red-500 text-white '>
           <X />

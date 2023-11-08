@@ -29,7 +29,7 @@ interface ServerHeaderProps {
 }
 
 export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
-  const {onOpen} = useModal()
+  const { onOpen } = useModal();
   const isAdmin = role === MemberRole.ADMIN;
   const isModerator = isAdmin || role === MemberRole.MODERATOR;
   return (
@@ -43,12 +43,18 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className='w-56 text-sm font-medium text-muted-foreground'>
           {isModerator && (
-            <DropdownMenuItem onClick={()=> onOpen('invite', { server})} className='cursor-pointer'>
+            <DropdownMenuItem
+              onClick={() => onOpen('invite', { server })}
+              className='cursor-pointer text-green-600'
+            >
               Invite People <UserPlus className='h-4 w-4 ml-auto' />
             </DropdownMenuItem>
           )}
           {isAdmin && (
-            <DropdownMenuItem className='cursor-pointer'>
+            <DropdownMenuItem
+              onClick={() => onOpen('editServer', {server})}
+              className='cursor-pointer'
+            >
               Server Settings <Settings className='h-4 w-4 ml-auto' />
             </DropdownMenuItem>
           )}

@@ -36,7 +36,7 @@ export const ServerSidebar = async ({ serverId }: { serverId: string }) => {
   )?.role;
 
   if (!server) {
-    redirect('/');
+   return redirect('/');
   }
   return <div className=''>
     <ServerHeader server={server} role={role}/>

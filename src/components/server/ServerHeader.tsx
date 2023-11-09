@@ -20,6 +20,7 @@ import {
   Settings,
   Trash2,
   UserPlus,
+  Users2,
 } from 'lucide-react';
 import { useModal } from '@/hooks/use-modal-store';
 
@@ -56,6 +57,14 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
               className='cursor-pointer'
             >
               Server Settings <Settings className='h-4 w-4 ml-auto' />
+            </DropdownMenuItem>
+          )}
+          {isAdmin && (
+            <DropdownMenuItem
+              onClick={() => onOpen('members', {server})}
+              className='cursor-pointer'
+            >
+              Manage Members <Users2 className='h-4 w-4 ml-auto' />
             </DropdownMenuItem>
           )}
           {isModerator && (

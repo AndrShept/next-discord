@@ -14,6 +14,7 @@ interface NavigationItemProps {
 export const NavigationItem = ({ id, imageUrl, name }: NavigationItemProps) => {
   const params = useParams();
   const router = useRouter();
+
   return (
     <ActionTooltip align='center' side='right' label={name}>
       <button

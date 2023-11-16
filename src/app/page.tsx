@@ -9,7 +9,7 @@ import React from 'react';
 export default async function Home() {
   const profile: Profile = await initialProfile();
   const server = await prisma.server.findFirst({
-    where: { member: { some: { profileId: profile.id } } },
+    where: { members: { some: { profileId: profile.id } } },
   });
 
   if (server) {

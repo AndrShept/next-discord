@@ -17,9 +17,9 @@ model Profile {
   imageUrl String
   email    String
 
-  server  Server[]
-  member  Member[]
-  channel Channel[]
+  servers  Server[]
+  members  Member[]
+  channels Channel[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -33,8 +33,8 @@ model Server {
   imageUrl   String
   inviteCode String @unique 
 
-  member  Member[]
-  channel Channel[]
+  members  Member[]
+  channels Channel[]
 
   profile   Profile? @relation(fields: [profileId], references: [id], onDelete: Cascade)
   profileId String?  @db.ObjectId

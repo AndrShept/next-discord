@@ -14,24 +14,24 @@ export const ServerSidebar = async ({ serverId }: { serverId: string }) => {
   const server = await prisma.server.findUnique({
     where: { id: serverId },
     include: {
-      channel: { orderBy: { createdAt: 'asc' } },
-      member: { include: { profile: true }, orderBy: { role: 'asc' } },
+      channels: { orderBy: { createdAt: 'asc' } },
+      members: { include: { profile: true }, orderBy: { role: 'asc' } },
     },
   });
-  const textChannel = server?.channel.filter(
+  const textChannel = server?.channels.filter(
     (channel) => channel.type === ChannelType.TEXT
   );
-  const audioChannel = server?.channel.filter(
+  const audioChannel = server?.channels.filter(
     (channel) => channel.type === ChannelType.AUDIO
   );
-  const videoChannel = server?.channel.filter(
+  const videoChannel = server?.channels.filter(
     (channel) => channel.type === ChannelType.VIDEO
   );
-  const members = server?.member.filter(
+  const members = server?.members.filter(
     (member) => member.profileId !== profile.id
   );
 
-  const role = server?.member.find(
+  const role = server?.members.find(
     (member) => member.profileId === profile.id
   )?.role;
 

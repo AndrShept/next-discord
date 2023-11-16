@@ -18,7 +18,7 @@ const layout = async ({
   }
 
   const server = await prisma.server.findFirst({
-    where: { id: params.serverId, member: { some: { profileId: profile.id } } },
+    where: { id: params.serverId, members: { some: { profileId: profile.id } } },
   });
 
   if (!server) {

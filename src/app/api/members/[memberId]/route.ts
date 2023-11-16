@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const PATCH = async (
   req: Request,
-  { params }: { params: { serverId: string } }
+  { params }: { params: { memberId: string } }
 ) => {
 
   try {
@@ -13,13 +13,15 @@ export const PATCH = async (
     if (!profile) {
       return NextResponse.json('Unauthorize', { status: 401 });
     }
-    if (!params.serverId) {
-      return NextResponse.json('Server Id MIssing', { status: 400 });
+    if (!params.memberId) {
+      return NextResponse.json('member Id MIssing', { status: 400 });
     }
-    const { name, imageUrl } = await req.json();
+    const { serverId, role } = await req.json();
     const server = await prisma.server.update({
-      where: { id: params.serverId, },
-      data: { name, imageUrl },
+      where: { id: serverId },
+      data: {
+        members: { update: { where: { id: params.memberId }, data: { role } } },
+      },
     });
     return NextResponse.json(server, { status: 201 });
   } catch (error) {

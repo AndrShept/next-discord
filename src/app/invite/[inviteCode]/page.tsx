@@ -16,7 +16,7 @@ const page = async ({ params }: { params: { inviteCode: string } }) => {
   const existingServer = await prisma.server.findFirst({
     where: {
       inviteCode: params.inviteCode,
-      member: { some: { profileId: profile.id } },
+      members: { some: { profileId: profile.id } },
     },
   });
   if (existingServer) {
@@ -26,7 +26,7 @@ const page = async ({ params }: { params: { inviteCode: string } }) => {
   const server = await prisma.server.update({
     where: { inviteCode: params.inviteCode },
     data: {
-      member: {
+      members: {
         create: [
           {
             profileId: profile.id,

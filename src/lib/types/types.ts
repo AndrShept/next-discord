@@ -1,11 +1,16 @@
 import { Channel, Member, Profile, Server } from '@prisma/client';
 
+// interface MemberWithProfile extends Member {
+//   profile: Profile;
+// }
+
 export type ServerWithMembersWithProfile = Server & {
-  member: Member[]
+  members: (Member & {profile :Profile})[]
+  profiles: Profile
  
 };
 
 export interface ServerWithMembers extends Server {
-  member: Member[]
+  members: Member[]
  
 }

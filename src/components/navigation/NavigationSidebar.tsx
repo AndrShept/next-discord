@@ -15,7 +15,7 @@ export const NavigationSidebar = async () => {
    return null
   }
   const servers = await prisma.server.findMany({
-    where: { member: { some: { profileId: profile.id } } },
+    where: { members: { some: { profileId: profile.id } } },
   });
   return (
     <div className=' space-y-4 flex flex-col items-center h-full text-primary w-full bg-secondary/30 py-3'>

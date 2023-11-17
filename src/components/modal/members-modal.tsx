@@ -1,6 +1,5 @@
 'use client';
 import React, { ReactNode, useState } from 'react';
-import qs from 'query-string';
 import {
   Dialog,
   DialogContent,
@@ -12,9 +11,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { useModal } from '@/hooks/use-modal-store';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+
 import {
   Check,
   Copy,
@@ -63,9 +60,29 @@ export const MembersModal = () => {
         method: 'PATCH',
         body: JSON.stringify({ serverId: server.id, role }),
       });
+      const data = await res.json();
       if (res.ok) {
         router.refresh();
-        onClose()
+        onOpen('members', { server: data });
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoadingId('');
+    }
+  };
+
+  const onKick = async (memberId: string) => {
+    try {
+      setLoadingId(memberId);
+      const res = await fetch(`/api/members/${memberId}`, {
+        method: 'DELETE',
+        body: JSON.stringify(server.id),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        router.refresh();
+        onOpen('members', { server: data });
       }
     } catch (error) {
       console.log(error);
@@ -105,7 +122,8 @@ export const MembersModal = () => {
                 </p>
               </div>
               {server.profileId !== member.profileId &&
-                loadingId !== member.id && (
+                loadingId !== member.id &&
+                member.role !== 'ADMIN' && (
                   <div className='ml-auto'>
                     <DropdownMenu>
                       <DropdownMenuTrigger>
@@ -139,15 +157,16 @@ export const MembersModal = () => {
                                   <Check className='h-4 w-4 ml-auto' />
                                 )}
                               </DropdownMenuItem>
-
                             </DropdownMenuSubContent>
                           </DropdownMenuPortal>
                         </DropdownMenuSub>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                          <Gavel className='h-4 w-4 mr-2' />
-                          Kick
-                        </DropdownMenuItem>
+                        {member.role !== 'GUEST' && (
+                          <DropdownMenuItem onClick={() => onKick(member.id)}>
+                            <Gavel className='h-4 w-4 mr-2' />
+                            Kick
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>

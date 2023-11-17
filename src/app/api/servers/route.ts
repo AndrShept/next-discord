@@ -18,6 +18,7 @@ export const POST = async (req: Request) => {
         imageUrl,
         name,
         inviteCode: uuidv4(),
+        profileId: profile.id,
         channels: { create: { name: 'general', profileId: profile.id } },
         members: {
           create: {
@@ -29,7 +30,6 @@ export const POST = async (req: Request) => {
     });
     return NextResponse.json(newServer, { status: 201 });
   } catch (error) {
-    console.log('[SERVERS_POST]', error);
     return NextResponse.json('Inrernal Error', { status: 500 });
   }
 };

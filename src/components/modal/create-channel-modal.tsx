@@ -47,6 +47,7 @@ const formScheme = z.object({
 });
 
 export const CreateChannelModal = () => {
+
   const params: {serverId: string} = useParams() 
   const router = useRouter();
   const { isOpen, onClose, type } = useModal();

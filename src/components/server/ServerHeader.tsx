@@ -53,7 +53,7 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
           )}
           {isAdmin && (
             <DropdownMenuItem
-              onClick={() => onOpen('editServer', {server})}
+              onClick={() => onOpen('editServer', { server })}
               className='cursor-pointer'
             >
               Server Settings <Settings className='h-4 w-4 ml-auto' />
@@ -61,26 +61,34 @@ export const ServerHeader = ({ server, role }: ServerHeaderProps) => {
           )}
           {isAdmin && (
             <DropdownMenuItem
-              onClick={() => onOpen('members', {server})}
+              onClick={() => onOpen('members', { server })}
               className='cursor-pointer'
             >
               Manage Members <Users2 className='h-4 w-4 ml-auto' />
             </DropdownMenuItem>
           )}
           {isModerator && (
-            <DropdownMenuItem onClick={()=> onOpen('createChannel')} className='cursor-pointer'>
-
+            <DropdownMenuItem
+              onClick={() => onOpen('createChannel')}
+              className='cursor-pointer'
+            >
               Create Channel <PlusCircle className='h-4 w-4 ml-auto' />
             </DropdownMenuItem>
           )}
           {isModerator && <DropdownMenuSeparator />}
           {isAdmin && (
-            <DropdownMenuItem className='cursor-pointer text-rose-500'>
+            <DropdownMenuItem
+              onClick={() => onOpen('deleteServer', { server })}
+              className='cursor-pointer text-rose-500'
+            >
               Delete Server <Trash2 className='h-4 w-4 ml-auto ' />
             </DropdownMenuItem>
           )}
           {!isAdmin && (
-            <DropdownMenuItem className='cursor-pointer'>
+            <DropdownMenuItem
+              onClick={() => onOpen('leaveServer', { server })}
+              className='cursor-pointer'
+            >
               Leave Server <LogOut className='h-4 w-4 ml-auto ' />
             </DropdownMenuItem>
           )}

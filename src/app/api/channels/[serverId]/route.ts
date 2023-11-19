@@ -1,6 +1,6 @@
 import { currentProfile } from '@/lib/current-profile';
 import { prisma } from '@/lib/db/prisma';
-import { ChannelType } from '@prisma/client';
+import { ChannelType, MemberRole } from '@prisma/client';
 import { NextResponse } from 'next/server';
 
 export const POST = async (
@@ -21,9 +21,20 @@ export const POST = async (
     if (!name && !type) {
       return NextResponse.json('name or type  is missing!', { status: 400 });
     }
+    if (name === 'general') {
+      return NextResponse.json('Name cannot be "general"', { status: 400 });
+    }
 
     const newServer = await prisma.server.update({
-      where: { id: params.serverId },
+      where: {
+        id: params.serverId,
+        members: {
+          some: {
+            profileId: profile.id,
+            role: { in: [MemberRole.ADMIN, MemberRole.MODERATOR] },
+          },
+        },
+      },
       data: { channels: { create: { name, type, profileId: profile.id } } },
     });
     return NextResponse.json(newServer, { status: 200 });

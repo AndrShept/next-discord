@@ -32,8 +32,7 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const params = useParams();
-  const [value, setValue] = useState('')
-
+  const [value, setValue] = useState('');
 
   const onClick = ({
     id,
@@ -76,7 +75,11 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
         </kbd>
       </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput value={value} onValueChange={setValue} placeholder='Search all channels and members' />
+        <CommandInput
+          value={value}
+          onValueChange={setValue}
+          placeholder='Search all channels and members'
+        />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
           {data?.map(({ label, type, data }) => {
@@ -85,7 +88,10 @@ export const ServerSearch = ({ data }: ServerSearchProps) => {
               <CommandGroup key={label} heading={label}>
                 {data?.map(({ id, icon, name }) => {
                   return (
-                    <CommandItem key={id} onSelect={()=> onClick({id,type})}>
+                    <CommandItem
+                      key={id}
+                      onSelect={() => onClick({ id, type })}
+                    >
                       {icon}
                       <span>{name}</span>
                     </CommandItem>

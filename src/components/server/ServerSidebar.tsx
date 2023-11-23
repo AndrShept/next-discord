@@ -12,6 +12,7 @@ import { channel } from 'diagnostics_channel';
 import { Separator } from '../ui/separator';
 import { ServerSection } from './ServerSection';
 import { ServerChannel } from './ServerChannel';
+import { ServerMember } from './ServerMember';
 
 const iconMap = {
   [ChannelType.TEXT]: <Hash className='mr-2 h-4 w-4' />,
@@ -19,7 +20,7 @@ const iconMap = {
   [ChannelType.VIDEO]: <Video className='mr-2 h-4 w-4' />,
 };
 
-const roleIconMap = {
+export const roleIconMap = {
   [MemberRole.GUEST]: null,
   [MemberRole.MODERATOR]: (
     <ShieldCheck className='h-4 w-4 mr-2 text-indigo-500' />
@@ -116,7 +117,61 @@ export const ServerSidebar = async ({ serverId }: { serverId: string }) => {
             label='Text Channel'
           />
           {textChannel.map((channel) => (
-            <ServerChannel />
+            <ServerChannel
+              key={channel.id}
+              channel={channel}
+              role={role}
+              server={server}
+            />
+          ))}
+        </div>
+      )}
+      {!!audioChannel?.length && (
+        <div className='mb-2'>
+          <ServerSection
+            sectionType='channels'
+            channelType={ChannelType.AUDIO}
+            role={role}
+            label='Voice Channel'
+          />
+          {audioChannel.map((channel) => (
+            <ServerChannel
+              key={channel.id}
+              channel={channel}
+              role={role}
+              server={server}
+            />
+          ))}
+        </div>
+      )}
+      {!!videoChannel?.length && (
+        <div className='mb-2'>
+          <ServerSection
+            sectionType='channels'
+            channelType={ChannelType.VIDEO}
+            role={role}
+            label='Video Channel'
+          />
+          {videoChannel.map((channel) => (
+            <ServerChannel
+              key={channel.id}
+              channel={channel}
+              role={role}
+              server={server}
+            />
+          ))}
+        </div>
+      )}
+      {!!members?.length && (
+        <div className='mb-2'>
+          <ServerSection
+            sectionType='members'
+            role={role}
+            label='Members'
+            server={server}
+          />
+          {members.map((member) => (
+            <ServerMember key={member.id} member={member} server={server} />
           ))}
         </div>
       )}

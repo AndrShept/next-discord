@@ -1,5 +1,5 @@
 'use client';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -47,15 +47,15 @@ const formScheme = z.object({
 });
 
 export const CreateChannelModal = () => {
-
-  const params: {serverId: string} = useParams() 
+  const params: { serverId: string } = useParams();
   const router = useRouter();
-  const { isOpen, onClose, type } = useModal();
+  const { isOpen, onClose, type, data } = useModal();
+  const { channelType } = data;
   const isModalOpen = isOpen && type === 'createChannel';
   const form = useForm<z.infer<typeof formScheme>>({
     defaultValues: {
       name: '',
-      type: 'TEXT',
+      type: channelType || ChannelType.TEXT,
     },
     resolver: zodResolver(formScheme),
   });
@@ -66,7 +66,6 @@ export const CreateChannelModal = () => {
   };
 
   const onSubmit = async (values: z.infer<typeof formScheme>) => {
-    console.log(values);
     try {
       const res = await fetch(`/api/channels/${params.serverId}`, {
         method: 'POST',
@@ -81,6 +80,13 @@ export const CreateChannelModal = () => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    if (channelType) {
+      form.setValue('type', channelType);
+    } else {
+      form.setValue('type', ChannelType.TEXT);
+    }
+  }, [channelType, form]);
   return (
     <Dialog open={isModalOpen} onOpenChange={handleClose}>
       <DialogTrigger asChild>Open</DialogTrigger>
@@ -116,23 +122,29 @@ export const CreateChannelModal = () => {
               control={form.control}
               name='type'
               render={({ field }) => (
-                <FormItem >
+                <FormItem>
                   <FormLabel className='uppercase text-sm font-bold'>
                     Channel type
                   </FormLabel>
                   <FormControl>
                     <Select
-                    disabled={isLoading}
+                      disabled={isLoading}
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
-                      <SelectTrigger >
+                      <SelectTrigger>
                         <SelectValue placeholder={'Select a channel type'} />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem  value={ChannelType.TEXT}>{ChannelType.TEXT}</SelectItem>
-                        <SelectItem  value={ChannelType.AUDIO}>{ChannelType.AUDIO}</SelectItem>
-                        <SelectItem  value={ChannelType.VIDEO}>{ChannelType.VIDEO}</SelectItem>
+                        <SelectItem value={ChannelType.TEXT}>
+                          {ChannelType.TEXT}
+                        </SelectItem>
+                        <SelectItem value={ChannelType.AUDIO}>
+                          {ChannelType.AUDIO}
+                        </SelectItem>
+                        <SelectItem value={ChannelType.VIDEO}>
+                          {ChannelType.VIDEO}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>

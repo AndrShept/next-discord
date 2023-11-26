@@ -12,6 +12,7 @@ export default async function Home() {
     where: { members: { some: { profileId: profile.id } } },
   });
 
+  console.log(server)
   if (server) {
     return redirect(`/server/${server.id}`);
   }

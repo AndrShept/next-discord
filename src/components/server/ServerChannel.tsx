@@ -6,6 +6,7 @@ import React from 'react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { ActionTooltip } from '../ActionTooltip';
+import { useModal } from '@/hooks/use-modal-store';
 
 interface ServerChannelProps {
   channel: Channel;
@@ -24,17 +25,21 @@ export const ServerChannel = ({
   server,
   role,
 }: ServerChannelProps) => {
-  const params = useParams();
+  const params: { serverId: string; channelId: string } = useParams();
+  const { onOpen } = useModal();
   const router = useRouter();
   const pathname = usePathname();
   const Icon = iconMap[channel.type];
-
+  const onClick = () => {
+    router.push(`/server/${params.serverId}/channels/${channel.id}`);
+  };
   return (
     <Button
+      onClick={onClick}
       className={cn(
         'w-full group flex text-muted-foreground  transition justify-start mb-1',
         {
-          'bg-secondary text-secondary': params.serverId === channel.id,
+          'bg-secondary dark:text-white text-black': params.channelId === channel.id,
         }
       )}
       variant={'ghost'}
@@ -42,12 +47,14 @@ export const ServerChannel = ({
       <Icon
         size={17}
         className={cn('', {
-          'text-green-500 group-hover:text-green-400': channel.name === 'general',
+          'text-green-500 group-hover:text-green-400':
+            channel.name === 'general',
         })}
       />
       <p
         className={cn('line-clamp-1 font-semibold text-sm ml-3 ', {
-          'text-green-500 group-hover:text-green-400': channel.name === 'general',
+          'text-green-500 group-hover:text-green-400':
+            channel.name === 'general',
         })}
       >
         {channel.name}
@@ -56,6 +63,7 @@ export const ServerChannel = ({
         <div className='ml-auto space-x-1'>
           <ActionTooltip label='Edit'>
             <Edit
+              onClick={() => onOpen('editChannel', { server, channel })}
               size={17}
               strokeWidth={1.5}
               className='hidden group-hover:inline'
@@ -63,6 +71,7 @@ export const ServerChannel = ({
           </ActionTooltip>
           <ActionTooltip label='Delete'>
             <Trash2
+              onClick={() => onOpen('deleteChannel', { server, channel })}
               size={17}
               strokeWidth={1.5}
               className='hidden group-hover:inline text-rose-600'

@@ -50,11 +50,11 @@ export const LeaveSeverModal = () => {
             Are you sure you want to leave server{' '}
             <span className='text-green-500'>{server?.name}</span> ?
             <div className='mx-auto space-x-2 mt-4'>
-              <Button onClick={onLeave} variant={'destructive'}>
+              <Button disabled={isLoading}  onClick={onLeave} variant={'destructive'}>
                 Confirm{' '}
                 {isLoading && <Loader2 className='w-4 h-4 ml-2 animate-spin' />}
               </Button>
-              <Button onClick={onClose} variant={'outline'}>
+              <Button disabled={isLoading}  onClick={onClose} variant={'outline'}>
                 Cancel
               </Button>
             </div>

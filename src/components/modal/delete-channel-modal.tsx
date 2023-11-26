@@ -15,23 +15,25 @@ import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 
-export const DeleteSeverModal = () => {
+export const DeleteChannelModal = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { onOpen, isOpen, onClose, type, data } = useModal();
-  const { server } = data;
-  const isModalOpen = isOpen && type === 'deleteServer';
-
-  const onLeave = async () => {
+  const { server, channel } = data;
+  const isModalOpen = isOpen && type === 'deleteChannel';
+  const findGeneralChannel = server?.channels?.find(
+    (channel) => channel.name === 'general'
+  );
+  const onDelete = async () => {
     try {
       setIsLoading(true);
-      const res = await fetch(`/api/servers/${server?.id}`, {
+      const res = await fetch(`/api/channels/${server?.id}/${channel?.id}`, {
         method: 'DELETE',
       });
       if (res.ok) {
         onClose();
         router.refresh();
-        router.push('/');
+        router.push(`/server/${server?.id}/channels/${findGeneralChannel?.id}`);
       }
     } catch (error) {
       console.log(error);
@@ -45,16 +47,24 @@ export const DeleteSeverModal = () => {
       <DialogTrigger asChild>Open</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Delete Server</DialogTitle>
+          <DialogTitle>Delete Channel</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete server{' '}
-            <span className='text-green-500'>{server?.name}</span> ?
+            Are you sure you want to delete channel{' '}
+            <span className='text-green-500'>#{channel?.name}</span> ?
             <div className='mx-auto space-x-2 mt-4'>
-              <Button disabled={isLoading} onClick={onLeave} variant={'destructive'}>
+              <Button
+                disabled={isLoading}
+                onClick={onDelete}
+                variant={'destructive'}
+              >
                 Confirm{' '}
                 {isLoading && <Loader2 className='w-4 h-4 ml-2 animate-spin' />}
               </Button>
-              <Button disabled={isLoading}  onClick={onClose} variant={'outline'}>
+              <Button
+                disabled={isLoading}
+                onClick={onClose}
+                variant={'outline'}
+              >
                 Cancel
               </Button>
             </div>

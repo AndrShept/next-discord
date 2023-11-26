@@ -154,10 +154,10 @@ export const CreateChannelModal = () => {
               )}
             />
             <DialogFooter>
-              <Button variant={'primary'} type='submit'>
+              <Button disabled={isLoading} variant={'primary'} type='submit'>
                 <div className='flex items-center gap-2'>
                   <span>Create</span>
-                  {isLoading && <Loader2 className='animate-spin' />}
+                  {isLoading && <Loader2 size={20} className='animate-spin' />}
                 </div>
               </Button>
             </DialogFooter>

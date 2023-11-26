@@ -4,21 +4,25 @@ import { ActionTooltip } from '../ActionTooltip';
 import { cn } from '@/lib/utils';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { Channel } from '@prisma/client';
+import { channel } from 'diagnostics_channel';
 
 interface NavigationItemProps {
   id: string;
   imageUrl: string;
   name: string;
+  channels: Channel[]
+
 }
 
-export const NavigationItem = ({ id, imageUrl, name }: NavigationItemProps) => {
+export const NavigationItem = ({ id, imageUrl, name, channels }: NavigationItemProps) => {
   const params = useParams();
   const router = useRouter();
-
+  const findGeneralChannel = channels.find(channel => channel.name === 'general')
   return (
     <ActionTooltip align='center' side='right' label={name}>
       <button
-        onClick={() => router.push(`/server/${id}`)}
+        onClick={() => router.push(`/server/${id}/channels/${findGeneralChannel?.id}`)}
         className='group relative flex items-center mb-4'
       >
         <div

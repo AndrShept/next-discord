@@ -16,8 +16,12 @@ export const ServerMember = ({ member, server }: ServerMemberProps) => {
   const params = useParams();
   const router = useRouter();
   const icon = roleIconMap[member.role];
+  const onClick = () => {
+    router.push(`/server/${params.serverId}/conversation/${member.id}`);
+  };
   return (
     <button
+    onClick={onClick}
       className={cn(
         'w-full flex px-2  py-4 items-center rounded-md group hover:bg-secondary transition  justify-start',
         {

@@ -34,7 +34,7 @@ export default function RootLayout({
               <div className='hidden md:flex h-full w-[72px] z-30 flex-col  fixed inset-y-0 '>
                 <NavigationSidebar />
               </div>
-              <main className='md:pl-[72px]  h-full w-full md:py-4 py-2 '>
+              <main className='md:pl-[72px]  h-full w-full   '>
                 {' '}
            
            

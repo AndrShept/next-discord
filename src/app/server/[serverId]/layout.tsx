@@ -26,10 +26,10 @@ const layout = async ({
   }
   return (
     <div className='h-full'>
-      <div className='hidden md:flex h-full w-60 z-20 flex-col inset-y-0 fixed border py-4 px-2 bg-secondary/20'>
+      <div className='hidden md:flex h-full w-60 z-20 flex-col inset-y-0 fixed border py-2 px-2 bg-secondary/20'>
         <ServerSidebar serverId={params.serverId} />
       </div>
-      <main className='h-full md:pl-[248px] px-2'>{children}</main>
+      <main className='h-full md:pl-[240px] '>{children}</main>
     </div>
   );
 };

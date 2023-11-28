@@ -61,9 +61,9 @@ export const ServerSidebar = async ({ serverId }: { serverId: string }) => {
     return redirect('/');
   }
   return (
-    <div className=''>
+    <div className='w-56'>
       <ServerHeader server={server} role={role} />
-      <ScrollArea className='flex-1'>
+      <ScrollArea >
         <div className='mt-2'>
           <ServerSearch
             data={[

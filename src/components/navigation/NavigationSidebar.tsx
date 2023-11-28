@@ -18,7 +18,6 @@ export const NavigationSidebar = async () => {
     where: { members: { some: { profileId: profile.id } } },
     include: {channels: true}
   });
-  console.log(servers)
   return (
     <div className=' space-y-4 flex flex-col items-center h-full text-primary w-full bg-secondary/30 py-3'>
       <NavigationAction />

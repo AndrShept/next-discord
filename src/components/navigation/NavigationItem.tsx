@@ -11,18 +11,29 @@ interface NavigationItemProps {
   id: string;
   imageUrl: string;
   name: string;
-  channels: Channel[]
-
+  channels: Channel[];
 }
 
-export const NavigationItem = ({ id, imageUrl, name, channels }: NavigationItemProps) => {
+export const NavigationItem = ({
+  id,
+  imageUrl,
+  name,
+  channels,
+}: NavigationItemProps) => {
   const params = useParams();
   const router = useRouter();
-  const findGeneralChannel = channels.find(channel => channel.name === 'general')
+  const findGeneralChannel = channels.find(
+    (channel) => channel.name === 'general'
+  );
+
+  const onAction = (e: React.MouseEvent<HTMLButtonElement>) => {
+    router.push(`/server/${id}/channels/${findGeneralChannel?.id}`);
+    e.stopPropagation();
+  };
   return (
     <ActionTooltip align='center' side='right' label={name}>
       <button
-        onClick={() => router.push(`/server/${id}/channels/${findGeneralChannel?.id}`)}
+        onClick={onAction}
         className='group relative flex items-center mb-4'
       >
         <div
@@ -32,18 +43,16 @@ export const NavigationItem = ({ id, imageUrl, name, channels }: NavigationItemP
             params.serverId !== id && 'group-hover:h-[20px]',
             params.serverId === id ? 'h-[36px]' : 'h-[8px] '
           )}
-        >
-
-        </div>
+        ></div>
         <div
-            className={cn(
-              'relative group flex mx-3 h-[48px] w-[48px] rounded-[24px] group-hover:rounded-[16px] transition-all overflow-hidden ',
-              params.serverId === id &&
-                'bg-primary/10 text-primary rounded-[16px]'
-            )}
-          >
-            <Image fill src={imageUrl} alt='Channel' />
-          </div>
+          className={cn(
+            'relative group flex mx-3 h-[48px] w-[48px] rounded-[24px] group-hover:rounded-[16px] transition-all overflow-hidden ',
+            params.serverId === id &&
+              'bg-primary/10 text-primary rounded-[16px]'
+          )}
+        >
+          <Image fill src={imageUrl} alt='Channel' />
+        </div>
       </button>
     </ActionTooltip>
   );

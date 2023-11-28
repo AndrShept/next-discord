@@ -10,10 +10,11 @@ export type ModalType =
   | 'leaveServer'
   | 'deleteServer'
   | 'deleteChannel'
-  | 'editChannel';
+  | 'editChannel'
+  | 'sheetOpen';
 
 interface ModalData {
-  server?: Server & {channels?: Channel[]};
+  server?: Server & { channels?: Channel[] };
   channelType?: ChannelType;
   channel?: Channel;
 }

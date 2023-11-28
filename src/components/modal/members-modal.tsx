@@ -161,7 +161,7 @@ export const MembersModal = () => {
                           </DropdownMenuPortal>
                         </DropdownMenuSub>
                         <DropdownMenuSeparator />
-                        {member.role !== 'GUEST' && (
+                        { (
                           <DropdownMenuItem onClick={() => onKick(member.id)}>
                             <Gavel className='h-4 w-4 mr-2' />
                             Kick

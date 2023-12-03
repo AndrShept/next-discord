@@ -1,10 +1,15 @@
-import { Conversation } from '@prisma/client';
+import { Conversation, Profile, Member } from '@prisma/client';
 import { prisma } from './db/prisma';
+
+export interface ConversationWithMemberProfile extends Conversation {
+  memberOne: (Member & { profile?: Profile | null }) | null;
+  memberTwo: (Member & { profile?: Profile | null }) | null;
+}
 
 export const getOrCreateConversation = async (
   memberOneId: string,
   memberTwoId: string
-): Promise<Conversation | null> => {
+): Promise<ConversationWithMemberProfile | null> => {
   const conversation =
     (await findConversation(memberOneId, memberTwoId)) ||
     (await createNewConversation(memberOneId, memberTwoId));
@@ -15,7 +20,7 @@ export const getOrCreateConversation = async (
 const findConversation = async (
   memberOneId: string,
   memberTwoId: string
-): Promise<Conversation | null> => {
+): Promise<ConversationWithMemberProfile | null> => {
   try {
     const conversation = await prisma.conversation.findFirst({
       where: { AND: [{ memberOneId }, { memberTwoId }] },
@@ -33,7 +38,7 @@ const findConversation = async (
 const createNewConversation = async (
   memberOneId: string,
   memberTwoId: string
-): Promise<Conversation | null> => {
+): Promise<ConversationWithMemberProfile | null> => {
   try {
     const newConversation = await prisma.conversation.create({
       data: { memberOneId, memberTwoId },

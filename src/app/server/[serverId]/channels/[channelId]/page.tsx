@@ -20,7 +20,7 @@ const ChannelPage = async ({
     where: { serverId: params.serverId, profileId: profile.id },
   });
   if (!channel || !member) {
-    return redirect('/');
+    return redirect(`/server/${params.serverId}`);
   }
   return (
     <div>

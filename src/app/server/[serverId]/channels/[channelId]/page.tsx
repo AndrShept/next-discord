@@ -1,4 +1,5 @@
 import { ChatHeader } from '@/components/chat/ChatHeader';
+import { ChatInput } from '@/components/chat/ChatInput';
 import { currentProfile } from '@/lib/current-profile';
 import { prisma } from '@/lib/db/prisma';
 import { redirect } from 'next/navigation';
@@ -23,11 +24,21 @@ const ChannelPage = async ({
     return redirect(`/server/${params.serverId}`);
   }
   return (
-    <div>
+    <div className='flex flex-col h-full'>
       <ChatHeader
         name={channel.name}
         serverId={channel.serverId!}
         type='channel'
+      />
+      <div className='flex-1'>future message</div>
+      <ChatInput
+        name={channel.name}
+        type='channel'
+        apiUrl='/api/socket/messages'
+        query={{
+          channelId: channel.id,
+          serverId: params.serverId,
+        }}
       />
     </div>
   );

@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Plus, Smile } from 'lucide-react';
+import { useModal } from '@/hooks/use-modal-store';
 
 interface ChatInputProps {
   apiUrl: string;
@@ -29,10 +30,12 @@ const formSchema = z.object({
 });
 
 export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
+  const { onOpen } = useModal();
+
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       content: '',
-      fileUrl: ''
+      fileUrl: '',
     },
     resolver: zodResolver(formSchema),
   });
@@ -42,9 +45,14 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
     try {
       const res = await fetch(apiUrl, {
         method: 'POST',
-        body: JSON.stringify({...query, ...values}),
+        body: JSON.stringify({ ...query, ...values }),
       });
-    } catch (error) {}
+      if (res.ok) {
+        form.reset();
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className=' '>
@@ -59,6 +67,7 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
                 <FormControl>
                   <div className=' relative p-4 pb-6'>
                     <Button
+                      onClick={() => onOpen('messageFile', { apiUrl, query })}
                       type='button'
                       disabled={isLoading}
                       className='rounded-full absolute top-[29px] left-8 h-[24px] w-[24px] p-1'
@@ -67,8 +76,8 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
                       <Plus />
                     </Button>
                     <Input
-                      className='px-14 py-6 focus-visible:ring-0 bg-secondary/50 border-0 '
-                      placeholder={`Message ${
+                      className='px-14 py-6 focus-visible:ring-0 focus-visible:ring-offset-0 bg-secondary/50 border-0 '
+                      placeholder={`Message: ${
                         type === 'conversation' ? name : '#' + name
                       }`}
                       {...field}

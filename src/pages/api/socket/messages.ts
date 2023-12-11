@@ -15,7 +15,6 @@ export default async function handler(
     const profile = await currentProfilePages(req);
     const body = req.body;
     const { serverId, channelId, content, fileUrl } = JSON.parse(body);
-
     if (!profile) {
       return res.status(401).json({ error: 'Unauthorized' });
     }
@@ -25,9 +24,7 @@ export default async function handler(
     if (!channelId) {
       return res.status(401).json({ error: 'Channel Id  Missing' });
     }
-    if (!content) {
-      return res.status(401).json({ error: 'Channel Id  Missing' });
-    }
+   
 
     const server = await prisma.server.findFirst({
       where: {

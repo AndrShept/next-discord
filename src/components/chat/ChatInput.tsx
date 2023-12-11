@@ -16,6 +16,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Plus, Smile } from 'lucide-react';
 import { useModal } from '@/hooks/use-modal-store';
+import { EmojiPicker } from '../EmojiPicker';
+import { useRouter } from 'next/navigation';
 
 interface ChatInputProps {
   apiUrl: string;
@@ -31,6 +33,7 @@ const formSchema = z.object({
 
 export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
   const { onOpen } = useModal();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
@@ -49,6 +52,7 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
       });
       if (res.ok) {
         form.reset();
+        router.refresh();
       }
     } catch (error) {
       console.log(error);
@@ -89,7 +93,11 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
                       className='absolute top-[29px] right-8  rounded-full   h-[24px] w-[24px] p-1'
                       size={'icon'}
                     >
-                      <Smile />
+                      <EmojiPicker
+                        onChange={(emoji: string) =>
+                          field.onChange(`${field.value} ${emoji}`)
+                        }
+                      />
                     </Button>
                   </div>
                 </FormControl>

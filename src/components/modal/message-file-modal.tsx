@@ -46,14 +46,13 @@ export const MessageFileModal = () => {
 
   const onSubmit = async (values: z.infer<typeof formScheme>) => {
     try {
-      const res = await fetch('/api/servers', {
+      const res = await fetch(apiUrl as string, {
         method: 'POST',
-        body: JSON.stringify({ values, apiUrl, ...query }),
+        body: JSON.stringify({...values,  ...query, content: values.fileUrl }),
       });
       if (res.ok) {
         form.reset();
-        router.refresh();
-        window.location.reload();
+        handleClose()
       }
     } catch (error) {
       console.log(error);

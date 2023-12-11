@@ -7,6 +7,7 @@ import { NavigationSidebar } from '@/components/navigation/NavigationSidebar';
 import { CreateServerModal } from '@/components/modal/create-server-modal';
 import { ModalProviders } from '@/components/providers/ModalProviders';
 import { SocketProvider } from '@/components/providers/SocketProvider';
+import { QueryProvider } from '@/components/providers/QueryProvider';
 
 const font = Open_Sans({ subsets: ['latin'] });
 
@@ -37,7 +38,9 @@ export default function RootLayout({
                   <NavigationSidebar />
                 </div>
                 <main className='md:pl-[72px]  h-full w-full   '>
+                  <QueryProvider>
                   {children}
+                  </QueryProvider>
                 </main>
               </div>
             </SocketProvider>

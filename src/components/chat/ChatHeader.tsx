@@ -26,7 +26,7 @@ export const ChatHeader = ({
       )}
       <p className='font-semibold text-md '>{name}</p>
       <div className='ml-auto flex items-center'>
-        {type === 'conversation' && <SocketIndicator />}
+        <SocketIndicator />
       </div>
     </div>
   );

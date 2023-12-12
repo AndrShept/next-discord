@@ -16,13 +16,13 @@ export default async function handler(
     const body = req.body;
     const { serverId, channelId, content, fileUrl } = JSON.parse(body);
     if (!profile) {
-      return res.status(401).json({ error: 'Unauthorized' });
+      return res.status(401).json({ message: 'Unauthorized' });
     }
     if (!serverId) {
-      return res.status(401).json({ error: 'Server Id  Missing' });
+      return res.status(401).json({ message: 'Server Id  Missing' });
     }
     if (!channelId) {
-      return res.status(401).json({ error: 'Channel Id  Missing' });
+      return res.status(401).json({ message: 'Channel Id  Missing' });
     }
    
 
@@ -64,6 +64,6 @@ export default async function handler(
     return res.status(200).json({ newMessage, message: 'Message created' });
   } catch (error) {
     console.log('[MESSAGES_POST]', error);
-    return res.status(500).json({ message: 'Internal Error' });
+    return res.status(500).json({ error: 'Internal Error' });
   }
 }

@@ -1,14 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MessageWithMemberWithProfile } from './ChatMessages';
 import { Member, MemberRole, Profile } from '@prisma/client';
 import { UserAvatar } from '../UserAvatar';
 import { ActionTooltip } from '../ActionTooltip';
 import { roleIconMap } from '../server/ServerSidebar';
 import Image from 'next/image';
-import { Edit, FileIcon, Trash2 } from 'lucide-react';
+import { Check, Edit, FileIcon, Trash2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { space } from 'postcss/lib/list';
 import { Input } from '../ui/input';
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { useForm } from 'react-hook-form';
+import z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '../ui/button';
+import { url } from 'inspector';
+import { useModal } from '@/hooks/use-modal-store';
 
 interface ChatItemProps {
   id: string;
@@ -23,6 +37,10 @@ interface ChatItemProps {
   socketQuery: Record<string, string | null>;
 }
 
+const formSchema = z.object({
+  content: z.string().min(1),
+});
+
 export const ChatItem = ({
   content,
   currentMember,
@@ -35,9 +53,14 @@ export const ChatItem = ({
   socketUrl,
   timestamp,
 }: ChatItemProps) => {
+  const form = useForm<z.infer<typeof formSchema>>({
+    defaultValues: {
+      content: content,
+    },
+    resolver: zodResolver(formSchema),
+  });
   const [isEditing, setIsEditing] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [newContent, setNewContent] = useState(content);
+  const { onOpen } = useModal();
 
   const fileType = fileUrl?.split('.').pop();
   const isAdmin = currentMember.role === MemberRole.ADMIN;
@@ -48,13 +71,56 @@ export const ChatItem = ({
   const isPDF = fileType === 'pdf' && fileUrl;
   const isImage = !isPDF && fileUrl;
 
+  let messageId = id
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const res = await fetch(`${socketUrl}/${messageId}`, {
+        method: 'PATCH',
+        body: JSON.stringify({ ...socketQuery, ...values, messageId }),
+      });
+      if (res.ok) {
+        setIsEditing(false);
+        form.reset();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const onDelete =  () => {
+   
+      onOpen('deleteMessage', { apiUrl: `${socketUrl}/${messageId}` , query: socketQuery})
+      // const res = await fetch(`${socketUrl}/${id}`, {
+      //   method: 'DELETE',
+      //   body: JSON.stringify({ ...socketQuery, id }),
+      // });
+      // if (res.ok) {
+
+
+  };
+
+  const isLoading = form.formState.isSubmitting;
+
+  useEffect(() => {
+    form.reset({ content: content });
+  }, [content, form]);
+  useEffect(() => {
+    const handleKeyDown = (event: any) => {
+      if (event.key === 'Escape' || event.keyCode === 27) {
+        setIsEditing(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   return (
     <div className='relative group flex items-center hover:bg-secondary/50 p-4 transition w-full'>
       <div className='group flex gap-x-2 items-start w-full'>
         <div className='cursor-pointer hover:drop-shadow-md transition'>
           <UserAvatar src={member.profile.imageUrl} />
         </div>
-        <div className='flex flex-col w-full'>
+        <div className='flex flex-col w-full ml-1'>
           <div className='flex items-center'>
             <div className='flex items-center'>
               <p className='font-semibold text-sm hover:underline cursor-pointer'>
@@ -100,11 +166,62 @@ export const ChatItem = ({
             >
               {content}
               {isUpdated && !deleted && (
-                <span className='text-[10px] mx-2 bg-muted-foreground '>
+                <span className='text-[10px] mx-2 text-muted-foreground '>
                   (edited)
                 </span>
               )}
             </p>
+          )}
+          {isEditing && (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className='space-y-2'
+              >
+                <FormField
+                  control={form.control}
+                  name='content'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          disabled={isLoading}
+                          className='mt-2 focus-visible:ring-0 focus-visible:ring-offset-0'
+                          placeholder='Edited message'
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormDescription>Press escape to cancel</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className='space-x-1 pt-2'>
+                  <ActionTooltip label='Save'>
+                    <Button
+                      disabled={isLoading}
+                      size={'icon'}
+                      className='rounded-full h-7 w-7  '
+                      type='submit'
+                    >
+                      <Check className='' size={20} />
+                    </Button>
+                  </ActionTooltip>
+
+                  <ActionTooltip label='Cancel'>
+                    <Button
+                      disabled={isLoading}
+                      onClick={() => setIsEditing(false)}
+                      size={'icon'}
+                      className='rounded-full h-7 w-7'
+                      type='reset'
+                    >
+                      <X size={20} />
+                    </Button>
+                  </ActionTooltip>
+                </div>
+              </form>
+            </Form>
           )}
         </div>
       </div>
@@ -119,7 +236,10 @@ export const ChatItem = ({
             </ActionTooltip>
           )}
           <ActionTooltip label='Delete'>
-            <Trash2 className='cursor-pointer w-4 h-4 ml-auto text-rose-500 hover:text-rose-400  transition' />
+            <Trash2
+              onClick={onDelete }
+              className='cursor-pointer w-4 h-4 ml-auto text-muted-foreground dark:hover:text-white hover:text-black   transition'
+            />
           </ActionTooltip>
         </div>
       )}

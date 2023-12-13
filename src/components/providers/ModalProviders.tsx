@@ -9,6 +9,7 @@ import { DeleteSeverModal } from '../modal/delete-server-modal';
 import { DeleteChannelModal } from '../modal/delete-channel-modal';
 import { EditChannelModal } from '../modal/edit-channel-modal';
 import { MessageFileModal } from '../modal/message-file-modal';
+import { DeleteMessageModal } from '../modal/delete-message-modal';
 
 export const ModalProviders = () => {
   return (
@@ -23,6 +24,7 @@ export const ModalProviders = () => {
       <DeleteChannelModal />
       <EditChannelModal />
       <MessageFileModal />
+      <DeleteMessageModal />
     </>
   );
 };

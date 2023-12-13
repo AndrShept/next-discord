@@ -8,7 +8,7 @@ interface ChatWelcomeProps {
 
 export const ChatWelcome = ({ name, type }: ChatWelcomeProps) => {
   return (
-    <div className='space-y-2 px-4 mb-4'>
+    <div className='space-y-2 px-4 mb-4  '>
       {type === 'channel' && (
         <div className='h-[75px] w-[75px] p-1 bg-secondary/50 rounded-full flex items-center justify-center'>
           <Hash className='w-12 h-12 ' />

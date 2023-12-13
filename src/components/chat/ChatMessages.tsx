@@ -6,6 +6,7 @@ import { useChatQuery } from '@/hooks/use-chat-query';
 import { Loader2, ServerCrash } from 'lucide-react';
 import { ChatItem } from './ChatItem';
 import { format } from 'date-fns';
+import { Separator } from '../ui/separator';
 
 interface ChatMessagesProps {
   name: string;
@@ -60,10 +61,10 @@ export const ChatMessages = ({
     );
   }
   return (
-    <div className=' flex flex-1 flex-col py-4 overflow-y-auto'>
-      <div className='flex-1' />
+    <div className=' flex   flex-col  py-4 '>
       <ChatWelcome type={type} name={name} />
-      <div className='flex flex-col-reverse mt-auto'>
+      <Separator />
+      <div className='flex flex-1  flex-col-reverse mt-auto'>
         {data?.pages.map((group, i) => (
           <Fragment key={i}>
             {group.items.map((message: MessageWithMemberWithProfile) => (

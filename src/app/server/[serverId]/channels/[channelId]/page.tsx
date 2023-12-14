@@ -3,6 +3,7 @@ import { ChatInput } from '@/components/chat/ChatInput';
 import { ChatMessages } from '@/components/chat/ChatMessages';
 import { currentProfile } from '@/lib/current-profile';
 import { prisma } from '@/lib/db/prisma';
+import { ChevronsDown } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import React from 'react';
 
@@ -25,13 +26,13 @@ const ChannelPage = async ({
     return redirect(`/server/${params.serverId}`);
   }
   return (
-    <div className='flex flex-col h-full'>
+    <section className='flex flex-col h-full  relative  '>
       <ChatHeader
         name={channel.name}
         serverId={channel.serverId!}
         type='channel'
       />
-      <div className='flex-1'>
+      <div className=' flex-1 '>
         <ChatMessages
           member={member}
           name={channel.name}
@@ -47,16 +48,19 @@ const ChannelPage = async ({
           paramValue={channel.id}
         />
       </div>
-      <ChatInput
-        name={channel.name}
-        type='channel'
-        apiUrl='/api/socket/messages'
-        query={{
-          channelId: channel.id,
-          serverId: params.serverId,
-        }}
-      />
-    </div>
+     
+
+        <ChatInput
+          name={channel.name}
+          type='channel'
+          apiUrl='/api/socket/messages'
+          query={{
+            channelId: channel.id,
+            serverId: params.serverId,
+          }}
+        />
+    
+    </section>
   );
 };
 

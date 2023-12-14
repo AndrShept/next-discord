@@ -1,6 +1,6 @@
 'use client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { Button } from '@/components/ui/button';
@@ -14,10 +14,11 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Plus, Smile } from 'lucide-react';
+import { ChevronsDown, Plus, Smile } from 'lucide-react';
 import { useModal } from '@/hooks/use-modal-store';
 import { EmojiPicker } from '../EmojiPicker';
 import { useRouter } from 'next/navigation';
+import { ActionTooltip } from '../ActionTooltip';
 
 interface ChatInputProps {
   apiUrl: string;
@@ -32,6 +33,8 @@ const formSchema = z.object({
 });
 
 export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
+  const [scrollPosition, setScrollPosition] = useState({ x: 0, y: 0 });
+  const [isAtBottom, setIsAtBottom] = useState(true);
   const { onOpen } = useModal();
   const router = useRouter();
 
@@ -52,24 +55,53 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
       });
       if (res.ok) {
         form.reset();
-        router.refresh();
+        setTimeout(() => {
+          window.scrollTo(0, document.body.scrollHeight);
+        }, 100);
       }
     } catch (error) {
       console.log(error);
     }
   };
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPosition({ x: window.scrollX, y: window.scrollY });
+    };
+    setIsAtBottom(
+      scrollPosition.y + window.innerHeight >= document.body.scrollHeight
+    );
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [scrollPosition.y]);
+
   return (
-    <div className=' '>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-8'>
-          <FormField
-            control={form.control}
-            name='content'
-            render={({ field }) => (
-              <FormItem>
-                {/* <FormLabel>Username</FormLabel> */}
-                <FormControl>
-                  <div className=' relative p-4 pb-6'>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className='space-y-8 sticky   bottom-0   '
+      >
+        {!isAtBottom && (
+          <Button
+            type='button'
+            variant={'primary'}
+            onClick={() => window.scrollTo(0, document.body.scrollHeight)}
+            className='fixed right-5 bottom-24   p-1 sm:h-14 sm:w-14 h-10 w-10 rounded-full transition opacity-60 hover:opacity-100 '
+          >
+            <ChevronsDown className='m-auto  ' />
+          </Button>
+        )}
+        <FormField
+          control={form.control}
+          name='content'
+          render={({ field }) => (
+            <FormItem>
+              {/* <FormLabel>Username</FormLabel> */}
+              <FormControl>
+                <div className=' relative p-4 pb-6 bg-background'>
+                  <ActionTooltip label='Add file'>
                     <Button
                       onClick={() => onOpen('messageFile', { apiUrl, query })}
                       type='button'
@@ -80,36 +112,36 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
                     >
                       <Plus />
                     </Button>
-                    <Input
-                      className='px-14 py-6 focus-visible:ring-0 focus-visible:ring-offset-0 bg-secondary/50 border-0 '
-                      placeholder={`Message: ${
-                        type === 'conversation' ? name : '#' + name
-                      }`}
-                      {...field}
+                  </ActionTooltip>
+                  <Input
+                    className='px-14 py-6 focus-visible:ring-0 focus-visible:ring-offset-0 bg-secondary/50 border-0 '
+                    placeholder={`Message: ${
+                      type === 'conversation' ? name : '#' + name
+                    }`}
+                    {...field}
+                  />
+
+                  <Button
+                    variant={'primary'}
+                    type='button'
+                    disabled={isLoading}
+                    className='absolute top-[29px] right-8  rounded-full   h-[24px] w-[24px] p-1'
+                    size={'icon'}
+                  >
+                    <EmojiPicker
+                      onChange={(emoji: string) =>
+                        field.onChange(`${field.value} ${emoji}`)
+                      }
                     />
+                  </Button>
+                </div>
+              </FormControl>
 
-                    <Button
-                      variant={'primary'}
-                      type='button'
-                      disabled={isLoading}
-                      className='absolute top-[29px] right-8  rounded-full   h-[24px] w-[24px] p-1'
-                      size={'icon'}
-                    >
-                      <EmojiPicker
-                        onChange={(emoji: string) =>
-                          field.onChange(`${field.value} ${emoji}`)
-                        }
-                      />
-                    </Button>
-                  </div>
-                </FormControl>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </form>
-      </Form>
-    </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </form>
+    </Form>
   );
 };

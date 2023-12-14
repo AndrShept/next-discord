@@ -12,6 +12,7 @@ interface ActionTooltipProps {
   children?: ReactNode;
   side?: 'top' | 'right' | 'left' | 'bottom';
   align?: 'start' | 'center' | 'end';
+  alignOffset?: number
 }
 
 export const ActionTooltip = ({
@@ -19,12 +20,13 @@ export const ActionTooltip = ({
   children,
   side,
   align,
+  alignOffset
 }: ActionTooltipProps) => {
   return (
     <TooltipProvider>
       <Tooltip  delayDuration={50}>
         <TooltipTrigger asChild>{children}</TooltipTrigger>
-        <TooltipContent side={side} align={align}>
+        <TooltipContent side={side} align={align} alignOffset={alignOffset}>
           <p className='font-semibold text-sm capitalize'>
             {label.toLowerCase()}
           </p>

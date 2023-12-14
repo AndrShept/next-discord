@@ -24,7 +24,6 @@ export default async function handler(
     if (!channelId) {
       return res.status(401).json({ message: 'Channel Id  Missing' });
     }
-   
 
     const server = await prisma.server.findFirst({
       where: {
@@ -57,6 +56,7 @@ export default async function handler(
 
     const newMessage = await prisma.message.create({
       data: { content, channelId, memberId: member.id, fileUrl },
+      include: { member: { include: { profile: true } } },
     });
 
     const channelKey = `chat:${channelId}:messages`;

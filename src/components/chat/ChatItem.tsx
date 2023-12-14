@@ -23,11 +23,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '../ui/button';
 import { url } from 'inspector';
 import { useModal } from '@/hooks/use-modal-store';
+import { useParams, useRouter } from 'next/navigation';
 
 interface ChatItemProps {
   id: string;
   content: string;
-  member: Member & { profile: Profile };
+  member: Member & { profile: Profile  };
   timestamp: string;
   fileUrl: string | null;
   deleted: boolean;
@@ -53,14 +54,17 @@ export const ChatItem = ({
   socketUrl,
   timestamp,
 }: ChatItemProps) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const { onOpen } = useModal();
+  const router = useRouter()
+  const params = useParams()
+
   const form = useForm<z.infer<typeof formSchema>>({
     defaultValues: {
       content: content,
     },
     resolver: zodResolver(formSchema),
   });
-  const [isEditing, setIsEditing] = useState(false);
-  const { onOpen } = useModal();
 
   const fileType = fileUrl?.split('.').pop();
   const isAdmin = currentMember.role === MemberRole.ADMIN;
@@ -71,7 +75,7 @@ export const ChatItem = ({
   const isPDF = fileType === 'pdf' && fileUrl;
   const isImage = !isPDF && fileUrl;
 
-  let messageId = id
+  let messageId = id;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       const res = await fetch(`${socketUrl}/${messageId}`, {
@@ -86,17 +90,19 @@ export const ChatItem = ({
       console.log(error);
     }
   };
-  const onDelete =  () => {
-   
-      onOpen('deleteMessage', { apiUrl: `${socketUrl}/${messageId}` , query: socketQuery})
-      // const res = await fetch(`${socketUrl}/${id}`, {
-      //   method: 'DELETE',
-      //   body: JSON.stringify({ ...socketQuery, id }),
-      // });
-      // if (res.ok) {
-
+  const onDelete = () => {
+    onOpen('deleteMessage', {
+      apiUrl: `${socketUrl}/${messageId}`,
+      query: socketQuery,
+    });
 
   };
+  const onMemberClick = () => {
+    // if (member.id === currentMember.id){
+    //   return
+    // }
+    router.push(`/server/${params?.serverId}/conversation/${member.profileId}`)
+  }
 
   const isLoading = form.formState.isSubmitting;
 
@@ -117,13 +123,14 @@ export const ChatItem = ({
   return (
     <div className='relative group flex items-center hover:bg-secondary/50 p-4 transition w-full'>
       <div className='group flex gap-x-2 items-start w-full'>
-        <div className='cursor-pointer hover:drop-shadow-md transition'>
-          <UserAvatar src={member.profile.imageUrl} />
+        <div onClick={onMemberClick} className='cursor-pointer hover:drop-shadow-md transition'>
+          <UserAvatar src={member.profile.imageUrl!} />
         </div>
+
         <div className='flex flex-col w-full ml-1'>
           <div className='flex items-center'>
             <div className='flex items-center'>
-              <p className='font-semibold text-sm hover:underline cursor-pointer'>
+              <p onClick={onMemberClick} className='font-semibold text-sm hover:underline cursor-pointer'>
                 {member.profile.name}
               </p>
               <div className='ml-1'>
@@ -199,7 +206,10 @@ export const ChatItem = ({
                 <div className='space-x-1 pt-2'>
                   <ActionTooltip label='Save'>
                     <Button
-                      disabled={isLoading}
+                      variant={'primary'}
+                      disabled={
+                        isLoading || form.getValues().content === content
+                      }
                       size={'icon'}
                       className='rounded-full h-7 w-7  '
                       type='submit'
@@ -210,6 +220,8 @@ export const ChatItem = ({
 
                   <ActionTooltip label='Cancel'>
                     <Button
+                    
+                      variant={'primary'}
                       disabled={isLoading}
                       onClick={() => setIsEditing(false)}
                       size={'icon'}
@@ -237,7 +249,7 @@ export const ChatItem = ({
           )}
           <ActionTooltip label='Delete'>
             <Trash2
-              onClick={onDelete }
+              onClick={onDelete}
               className='cursor-pointer w-4 h-4 ml-auto text-muted-foreground dark:hover:text-white hover:text-black   transition'
             />
           </ActionTooltip>

@@ -25,13 +25,13 @@ export const ServerChannel = ({
   server,
   role,
 }: ServerChannelProps) => {
-  const params: { serverId: string; channelId: string } = useParams();
+  const params = useParams();
   const { onOpen } = useModal();
   const router = useRouter();
   const pathname = usePathname();
   const Icon = iconMap[channel.type];
   const onClick = () => {
-    router.push(`/server/${params.serverId}/channels/${channel.id}`);
+    router.push(`/server/${params?.serverId}/channels/${channel.id}`);
   };
   return (
     <Button
@@ -39,7 +39,8 @@ export const ServerChannel = ({
       className={cn(
         'w-full group flex text-muted-foreground  transition justify-start mb-1',
         {
-          'bg-secondary dark:text-white text-black': params.channelId === channel.id,
+          'bg-secondary dark:text-white text-black':
+            params?.channelId === channel.id,
         }
       )}
       variant={'ghost'}

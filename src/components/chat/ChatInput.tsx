@@ -73,6 +73,7 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
                     <Button
                       onClick={() => onOpen('messageFile', { apiUrl, query })}
                       type='button'
+                      variant={'primary'}
                       disabled={isLoading}
                       className='rounded-full absolute top-[29px] left-8 h-[24px] w-[24px] p-1'
                       size={'icon'}
@@ -88,6 +89,7 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
                     />
 
                     <Button
+                      variant={'primary'}
                       type='button'
                       disabled={isLoading}
                       className='absolute top-[29px] right-8  rounded-full   h-[24px] w-[24px] p-1'

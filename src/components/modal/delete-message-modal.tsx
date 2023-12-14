@@ -47,12 +47,13 @@ export const DeleteMessageModal = () => {
           <DialogTitle>Delete Message</DialogTitle>
           <DialogDescription>
             Are you sure you want to delete message{' '}
-            <span className='text-green-500'>#{}</span> ?
+            <span className='text-green-500'>{}</span> ?
             <div className='mx-auto space-x-2 mt-4'>
               <Button
                 disabled={isLoading}
                 onClick={onDelete}
                 variant={'destructive'}
+                className='focus-visible:ring-0 focus-visible:ring-offset-0'
               >
                 Confirm{' '}
                 {isLoading && <Loader2 className='w-4 h-4 ml-2 animate-spin' />}
@@ -61,6 +62,7 @@ export const DeleteMessageModal = () => {
                 disabled={isLoading}
                 onClick={onClose}
                 variant={'outline'}
+                className='focus-visible:ring-0 focus-visible:ring-offset-0'
               >
                 Cancel
               </Button>

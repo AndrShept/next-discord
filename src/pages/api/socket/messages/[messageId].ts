@@ -47,7 +47,7 @@ export default async function handler(
         include: { member: { include: { profile: true } } },
       });
     }
-    const updateKey = `chat:${channelId}: messages:update`;
+    const updateKey = `chat:${channelId}:messages:update`;
     res?.socket?.server?.io?.emit(updateKey, updatedMessage);
     return res
       .status(200)

@@ -1,4 +1,6 @@
 import { ChatHeader } from '@/components/chat/ChatHeader';
+import { ChatInput } from '@/components/chat/ChatInput';
+import { ChatMessages } from '@/components/chat/ChatMessages';
 import { useSocket } from '@/components/providers/SocketProvider';
 import {
   ConversationWithMemberProfile,
@@ -44,6 +46,8 @@ const MemberIdPage = async ({ params }: MemberIdPageProps) => {
         serverId={params.serverId}
         type='conversation'
       />
+      <ChatMessages />
+      <ChatInput/>
  
     </div>
   );

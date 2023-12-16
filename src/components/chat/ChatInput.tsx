@@ -63,9 +63,10 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
       console.log(error);
     }
   };
+
   useEffect(() => {
     const handleScroll = () => {
-      setScrollPosition({ x: window.scrollX, y: window.scrollY });
+      setScrollPosition((prev) => ({ ...prev, y: window.scrollY }));
     };
     setIsAtBottom(
       scrollPosition.y + window.innerHeight >= document.body.scrollHeight
@@ -83,16 +84,7 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className='space-y-8 sticky   bottom-0   '
       >
-        {!isAtBottom && (
-          <Button
-            type='button'
-            variant={'primary'}
-            onClick={() => window.scrollTo(0, document.body.scrollHeight)}
-            className='fixed right-5 bottom-24   p-1 sm:h-14 sm:w-14 h-10 w-10 rounded-full transition opacity-60 hover:opacity-100 '
-          >
-            <ChevronsDown className='m-auto  ' />
-          </Button>
-        )}
+
         <FormField
           control={form.control}
           name='content'
@@ -134,6 +126,16 @@ export const ChatInput = ({ apiUrl, name, query, type }: ChatInputProps) => {
                       }
                     />
                   </Button>
+                  {!isAtBottom && (
+          <Button
+            type='button'
+            variant={'primary'}
+            onClick={() => window.scrollTo(0, document.body.scrollHeight)}
+            className='absolute right-5 bottom-24   p-1    h-12 w-12 rounded-full transition opacity-60 hover:opacity-100 '
+          >
+            <ChevronsDown className=' ' />
+          </Button>
+        )}
                 </div>
               </FormControl>
 

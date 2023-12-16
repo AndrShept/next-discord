@@ -1,6 +1,6 @@
 'use client';
 import { Member, Message, Profile } from '@prisma/client';
-import React, { Fragment } from 'react';
+import React, { ElementRef, Fragment, useRef } from 'react';
 import { ChatWelcome } from './ChatWelcome';
 import { useChatQuery } from '@/hooks/use-chat-query';
 import { Loader2, ServerCrash } from 'lucide-react';
@@ -8,6 +8,8 @@ import { ChatItem } from './ChatItem';
 import { format } from 'date-fns';
 import { Separator } from '../ui/separator';
 import { useChatSocket } from '@/hooks/use-chat-socket';
+import { Button } from '../ui/button';
+import { useChatScroll } from '@/hooks/use-chat-scroll';
 
 interface ChatMessagesProps {
   name: string;
@@ -40,6 +42,10 @@ export const ChatMessages = ({
   const queryKey = `chat:${chatId}`;
   const addKey = `chat:${chatId}:messages`;
   const updateKey = `chat:${chatId}:messages:update`;
+
+  const chatRef = useRef<ElementRef<'div'>>(null);
+  const bottomRef = useRef<ElementRef<'div'>>(null);
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useChatQuery({
       queryKey,
@@ -48,6 +54,14 @@ export const ChatMessages = ({
       paramValue,
     });
   useChatSocket({ queryKey, addKey, updateKey });
+
+  // useChatScroll({
+  //   chatRef,
+  //   bottomRef,
+  //   loadMore: fetchNextPage,
+  //   shouldLoadMore: !isFetchingNextPage && !!hasNextPage,
+  //   count: data?.pages[0]?.items?.length ?? 0,
+  // });
   if (status === 'loading') {
     return (
       <div className='flex flex-col flex-1 justify-center items-center'>
@@ -64,10 +78,32 @@ export const ChatMessages = ({
       </div>
     );
   }
+
   return (
-    <div className=' flex   flex-col  py-4 '>
-      <ChatWelcome type={type} name={name} />
-      <Separator />
+    <div ref={chatRef} className=' flex   flex-col   '>
+      {!hasNextPage && <div className='flex-1' />}
+      {!hasNextPage && <ChatWelcome type={type} name={name} />}
+      {!hasNextPage && <Separator />}
+
+      {hasNextPage && (
+        <div className='flex justify-center py-4'>
+          {isFetchingNextPage ? (
+            <div className='pb-3 '>
+
+              <Loader2 className='animate spin ' />
+            </div>
+          ) : (
+            <Button
+              onClick={() => fetchNextPage()}
+              size={'sm'}
+              className='rounded-full'
+              variant={'outline'}
+            >
+              Load previous messages
+            </Button>
+          )}
+        </div>
+      )}
       <div className='flex flex-1  flex-col-reverse mt-auto'>
         {data?.pages.map((group, i) => (
           <Fragment key={i}>
@@ -89,6 +125,7 @@ export const ChatMessages = ({
           </Fragment>
         ))}
       </div>
+      <div ref={bottomRef} />
     </div>
   );
 };

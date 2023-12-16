@@ -23,8 +23,8 @@ export const ActionTooltip = ({
   alignOffset
 }: ActionTooltipProps) => {
   return (
-    <TooltipProvider>
-      <Tooltip  delayDuration={50}>
+    <TooltipProvider >
+      <Tooltip  delayDuration={50} >
         <TooltipTrigger asChild>{children}</TooltipTrigger>
         <TooltipContent side={side} align={align} alignOffset={alignOffset}>
           <p className='font-semibold text-sm capitalize'>

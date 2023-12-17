@@ -1,6 +1,6 @@
 'use client';
 import { Member, Message, Profile } from '@prisma/client';
-import React, { ElementRef, Fragment, useRef } from 'react';
+import React, { ElementRef, Fragment, useRef, useState } from 'react';
 import { ChatWelcome } from './ChatWelcome';
 import { useChatQuery } from '@/hooks/use-chat-query';
 import { Loader2, ServerCrash } from 'lucide-react';
@@ -10,6 +10,7 @@ import { Separator } from '../ui/separator';
 import { useChatSocket } from '@/hooks/use-chat-socket';
 import { Button } from '../ui/button';
 import { useChatScroll } from '@/hooks/use-chat-scroll';
+import { Item } from '@radix-ui/react-dropdown-menu';
 
 interface ChatMessagesProps {
   name: string;
@@ -80,7 +81,7 @@ export const ChatMessages = ({
   }
 
   return (
-    <div ref={chatRef} className=' flex   flex-col   '>
+    <div ref={chatRef} className=' flex-1 flex flex-col  overflow-y-auto  '>
       {!hasNextPage && <div className='flex-1' />}
       {!hasNextPage && <ChatWelcome type={type} name={name} />}
       {!hasNextPage && <Separator />}
@@ -89,7 +90,6 @@ export const ChatMessages = ({
         <div className='flex justify-center py-4'>
           {isFetchingNextPage ? (
             <div className='pb-3 '>
-
               <Loader2 className='animate spin ' />
             </div>
           ) : (
@@ -104,7 +104,7 @@ export const ChatMessages = ({
           )}
         </div>
       )}
-      <div className='flex flex-1  flex-col-reverse mt-auto'>
+      <div className='flex  flex-col-reverse mt-auto'>
         {data?.pages.map((group, i) => (
           <Fragment key={i}>
             {group.items.map((message: MessageWithMemberWithProfile) => (
